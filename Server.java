@@ -39,10 +39,14 @@ public class Server extends Thread{
 
     public void broadcast(){
         try {
+            System.out.println("broadcast() - Entering First Loop");
             for(int i = 0; i<connectionsList.size(); i++){
+                System.out.println("broadcast() - Entering Second Loop");
                 for(int j = 0; j<connectionsList.size(); j++){
                     if(j!=i){
-                        connectionsList.get(j).getOutput().writeUTF(connectionsList.get(i).getInput().readUTF());
+                        System.out.println("broadcast() - Reading Connection");
+                        if(connectionsList.get(i).getInput().available() > 0)
+                            connectionsList.get(j).getOutput().writeUTF(connectionsList.get(i).getInput().readUTF());
                     }
                 }
             }
