@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+// Data Structure
+import java.util.ArrayList;
 
 // Gestione Errori
 //import java.io.FileNotFoundException;
@@ -18,16 +20,36 @@ import java.net.UnknownHostException;
 
 public class Server {
     ServerSocket serverSocket;
-    Socket socket;
+    ArrayList<Socket> socketList;
+    ArrayList<DataInputStream> inputList;
     DataInputStream input;
+
+    private Runnable connectionHandler(ServerSocket serverSocket){
+        try{
+            while(true){
+                socketList.add(serverSocket.accept());
+                input = new DataInputStream(socket.getInputStream());
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     public Server(int port){
         try {
             serverSocket = new ServerSocket(port);
-            socket = serverSocket.accept();
-            input = new DataInputStream(socket.getInputStream());
-            while(true){
-                System.out.println(input.readUTF());
+            socketList = new ArrayList<>();
+            new Thread(connectionHandler(this.serverSocket)).start();
+            try {
+                
+                while(true){
+                    System.out.println(input.readUTF());
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
