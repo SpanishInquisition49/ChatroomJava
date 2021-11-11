@@ -1,8 +1,8 @@
 // Creazione Socket, Trasferimento/Ricezione del File
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-//import java.net.ServerSocket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
@@ -16,30 +16,21 @@ import java.util.StringTokenizer;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-public final class Client {
-    Scanner keyboard;
+public class Server {
+    ServerSocket serverSocket;
     Socket socket;
     DataInputStream input;
-    DataOutputStream output;
 
-    public Client(String IP, int port){
+    public Server(int port){
         try {
-            socket = new Socket(InetAddress.getByName(IP), port);
+            serverSocket = new ServerSocket(port);
+            socket = serverSocket.accept();
             input = new DataInputStream(socket.getInputStream());
-            output = new DataOutputStream(socket.getOutputStream());
+            while(true){
+                System.out.println(input.readUTF());
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
-
-        keyboard = new Scanner(System.in);
-        String msg;
-        while(true){
-            msg = keyboard.nextLine();
-            try {
-                output.writeUTF(msg);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
         }
     }
 }
