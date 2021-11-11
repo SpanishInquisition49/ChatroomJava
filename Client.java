@@ -37,6 +37,7 @@ public final class Client {
             msg = keyboard.nextLine();
             try {
                 output.writeUTF(msg);
+                System.out.println(input.readUTF());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
