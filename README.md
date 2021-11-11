@@ -1,2 +1,2 @@
 # ChatroomJava
-na povertà improvvisata
+na poverata improvvisata
