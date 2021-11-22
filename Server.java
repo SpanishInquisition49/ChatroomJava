@@ -23,10 +23,12 @@ public class Server extends Thread{
     ArrayList<Connection> connectionsList;
 
     public void run(){
+        boolean on = true;
         try{
             while(true){
                 //connectionsList.add(new Connection(serverSocket.accept()));
                 Connection foo = new Connection(serverSocket.accept());
+                foo.getSocket().setKeepAlive(on);
                 connectionsList.add(foo);
                 System.out.println("Server:: New Connection Accepted | Username: " + foo.getUsername() + " | Clients number: " + connectionsList.size());
                 //socketList.add(serverSocket.accept());
@@ -39,8 +41,9 @@ public class Server extends Thread{
     }
 
     public void broadcast(){
+        checkDisconnected();
         try {
-            //System.out.println("broadcast() - Entering First Loop");
+            System.out.println("broadcast() - Entering First Loop");
             for(int i = 0; i<connectionsList.size(); i++){
                 System.out.println("Server:: Listenning for messages");
                 for(int j = 0; j<connectionsList.size(); j++){
@@ -56,7 +59,21 @@ public class Server extends Thread{
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        System.out.println("Server:: Exit from broadcast()");
+        //System.out.println("Server:: Exit from broadcast()");
+    }
+
+    public void checkDisconnected() {
+        //System.out.println("Server:: Checking for Disconnected Clients");
+        try {
+            for(int i = 0; i<connectionsList.size(); i++) {
+                if(connectionsList.get(i).getSocket().isClosed() || connectionsList.get(i).getSocket().isInputShutdown() || connectionsList.get(i).getSocket().isOutputShutdown()) {
+                    System.out.println("Server:: Client:" + connectionsList.get(i).getUsername() + " Disconnected");
+                    connectionsList.remove(i);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Server(int port){
@@ -68,6 +85,7 @@ public class Server extends Thread{
             try {
                 while(true){
                     broadcast();
+                    
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

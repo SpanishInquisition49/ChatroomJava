@@ -34,9 +34,11 @@ public final class Client {
         System.out.println("Client:: Connected to " + IP + ":" + port);
         keyboard = new Scanner(System.in);
         String msg;
-        while(true){
+        while(!socket.isClosed()){
             msg = keyboard.nextLine();
             try {
+                if(msg == "//exit")
+                    socket.close();
                 output.writeUTF(msg);
                 if(input.available() > 0)
                     System.out.println(input.readUTF());

@@ -13,10 +13,7 @@ public class Connection {
         this.socket = socket;
         input = new DataInputStream(socket.getInputStream());
         output = new DataOutputStream(socket.getOutputStream());
-        if(input.available()>0)
-            this.username = input.readUTF();
-        else
-            this.username = "Anonymous User";
+        this.username = input.readUTF();
     }
 
     public Socket getSocket() {
