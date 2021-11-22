@@ -28,6 +28,7 @@ public class Server extends Thread{
                 //connectionsList.add(new Connection(serverSocket.accept()));
                 Connection foo = new Connection(serverSocket.accept());
                 connectionsList.add(foo);
+                System.out.println("Server:: New Connection Accepted | Username: " + foo.getUsername() + " | Clients number: " + connectionsList.size());
                 //socketList.add(serverSocket.accept());
                 //input = new DataInputStream(socket.getInputStream());
             }
@@ -39,20 +40,23 @@ public class Server extends Thread{
 
     public void broadcast(){
         try {
-            System.out.println("broadcast() - Entering First Loop");
+            //System.out.println("broadcast() - Entering First Loop");
             for(int i = 0; i<connectionsList.size(); i++){
-                System.out.println("broadcast() - Entering Second Loop");
+                System.out.println("Server:: Listenning for messages");
                 for(int j = 0; j<connectionsList.size(); j++){
                     if(j!=i){
-                        System.out.println("broadcast() - Reading Connection");
-                        if(connectionsList.get(i).getInput().available() > 0)
-                            connectionsList.get(j).getOutput().writeUTF(connectionsList.get(i).getInput().readUTF());
+                        if(connectionsList.get(i).getInput().available() > 0){
+                            connectionsList.get(j).getOutput().writeUTF("[" + connectionsList.get(i).getUsername() + "] " + connectionsList.get(i).getInput().readUTF());
+                            System.out.println("Server:: [" + connectionsList.get(i).getUsername() + "] Message: " + connectionsList.get(i).getInput().readUTF());
+                        }
                     }
                 }
             }
         } catch (Exception e) {
-           e.printStackTrace();
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+        System.out.println("Server:: Exit from broadcast()");
     }
 
     public Server(int port){
@@ -60,14 +64,15 @@ public class Server extends Thread{
             serverSocket = new ServerSocket(port);
             connectionsList = new ArrayList<Connection>();
             start();
+            System.out.println("Server:: Started on port: " + port);
             try {
-                
                 while(true){
                     broadcast();
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+            System.out.println("Server:: Loop Endend");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

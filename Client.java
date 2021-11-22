@@ -22,15 +22,16 @@ public final class Client {
     DataInputStream input;
     DataOutputStream output;
 
-    public Client(String IP, int port){
+    public Client(String IP, int port, String username){
         try {
             socket = new Socket(InetAddress.getByName(IP), port);
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
+            output.writeUTF(username);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
+        System.out.println("Client:: Connected to " + IP + ":" + port);
         keyboard = new Scanner(System.in);
         String msg;
         while(true){

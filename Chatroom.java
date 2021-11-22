@@ -7,20 +7,22 @@ public class Chatroom {
     public Chatroom(String... args){
         String IP = null;
         int PORT = 0;
+        String username;
         if(args.length > 0){
             switch(args[0])
             {
                 //case "-c":
                 case "--client":
-                    if(args.length > 2)
+                    if(args.length > 3)
                     {
                         //StringTokenizer st = new StringTokenizer(args[1], ":");
                         IP = args[1];
                         PORT = Integer.valueOf(args[2]);
+                        username = args[3];
                         //new Client
                         try
                         {
-                            new Client(IP, PORT);
+                            new Client(IP, PORT, username);
                         }
                         catch(Exception uhe)
                         {
